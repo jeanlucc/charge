@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:10
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  scalab:
+    image: golang:1.13.5
+    volumes:
+      - .:/scalab
+      - ~/go:/go
+    working_dir: /scalab
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgres://postgres@db:5432/postgres"
+    command: go run /scalab/server.go
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./public:/public

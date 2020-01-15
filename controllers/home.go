@@ -1,11 +1,16 @@
 package controllers
 
-import "github.com/labstack/echo"
+import (
+	"github.com/labstack/echo"
+	"github.com/theodo/scalab/config"
+)
 
 type homeDataResponse struct {
-	Name string
+	Name        string
+	DatabaseUrl string
 }
 
 func Home(c echo.Context) error {
-	return c.Render(200, "home.html", homeDataResponse{Name: "JLC"})
+	cfg := config.Cfg
+	return c.Render(200, "home.html", homeDataResponse{Name: "JLC", DatabaseUrl: cfg.Database.Url})
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/theodo/scalab/config"
+	"github.com/theodo/scalab/config/router"
 )
 
 func main() {
@@ -17,8 +18,10 @@ func main() {
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 	}))
 	// Config
-	config.Routes(e)
+	config.LoadEnv()
+	router.Routes(e)
 	config.Templates(e)
+	config.Configure()
 	// Server
 	e.Logger.Fatal(e.Start(":3000"))
 }

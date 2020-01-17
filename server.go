@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/middleware"
 	"github.com/theodo/scalab/config"
 	"github.com/theodo/scalab/config/router"
+	"github.com/theodo/scalab/src/database"
 )
 
 func main() {
@@ -22,6 +23,8 @@ func main() {
 	config.Configure()
 	router.Routes(e)
 	config.Templates(e)
+	// Database
+	database.Connect()
 	// Server
 	e.Logger.Fatal(e.Start(":3000"))
 }

@@ -51,5 +51,5 @@ func readConfigFile(name string) {
 }
 
 func bindEnv() {
-	viper.BindEnv("database.url")
+	viper.BindEnv("database.url", "DATABASE_URL")
 }

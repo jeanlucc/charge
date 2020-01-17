@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/labstack/echo"
-	"github.com/theodo/scalab/controllers"
+	"github.com/theodo/scalab/src/controllers"
 )
 
 // Defines the routes of the application, it is called at server creation

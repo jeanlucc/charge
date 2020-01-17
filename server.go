@@ -19,9 +19,9 @@ func main() {
 	}))
 	// Config
 	config.LoadEnv()
+	config.Configure()
 	router.Routes(e)
 	config.Templates(e)
-	config.Configure()
 	// Server
 	e.Logger.Fatal(e.Start(":3000"))
 }

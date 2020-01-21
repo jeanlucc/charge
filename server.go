@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/theodo/scalab/config"
 	"github.com/theodo/scalab/config/router"
 	"github.com/theodo/scalab/src/database"
@@ -23,6 +23,7 @@ func main() {
 	config.Configure()
 	router.Routes(e)
 	config.Templates(e)
+	config.Session(e)
 	// Database
 	database.Connect()
 	// Server

@@ -8,7 +8,11 @@ import (
 )
 
 type Config struct {
-	Secret   string
+	Session struct {
+		Secret     string
+		MaxAge     int    `mapstructure:"max_age"`
+		CookieName string `mapstructure:"cookie_name"`
+	} `mapstructure:"session"`
 	Database struct {
 		Url string
 	}
@@ -52,4 +56,5 @@ func readConfigFile(name string) {
 
 func bindEnv() {
 	viper.BindEnv("database.url", "DATABASE_URL")
+	viper.BindEnv("session.secret", "APP_SECRET")
 }

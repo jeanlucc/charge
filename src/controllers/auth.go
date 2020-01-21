@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/theodo/scalab/config"
+	"github.com/theodo/scalab/src/entities"
 	"github.com/theodo/scalab/src/repositories"
 	"github.com/theodo/scalab/src/security"
 	"golang.org/x/crypto/bcrypt"
@@ -38,5 +39,18 @@ func Me(c echo.Context) error {
 }
 
 func SignUp(c echo.Context) error {
-	return c.String(http.StatusOK, "NOT IMPLEMENTED")
+	cred := new(security.Credentials)
+	if err := c.Bind(cred); err != nil {
+		return c.String(http.StatusBadRequest, "Could not retrieve username password from body")
+	}
+
+	password, err := bcrypt.GenerateFromPassword([]byte(cred.Password), config.Cfg.Security.Cost)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "Could not create account")
+	}
+	user := entities.User{Name: cred.Username, Email: cred.Username, Password: string(password)}
+
+	user = repositories.CreateUser(user)
+
+	return c.String(http.StatusOK, "Account created"+user.Id)
 }

@@ -16,6 +16,9 @@ type Config struct {
 	Database struct {
 		Url string
 	}
+	Security struct {
+		Cost int `mapstructure:"cost"`
+	} `mapstructure:"security"`
 }
 
 var Cfg Config

@@ -16,3 +16,7 @@ func getMappedUser(query string, args ...interface{}) (user entities.User) {
 	getOneResult([]interface{}{&user.Id, &user.Name, &user.Password, &user.Email}, query, args...)
 	return
 }
+
+func CreateUser(user entities.User) entities.User {
+	return getMappedUser("INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING *", user.Name, user.Password, user.Email)
+}

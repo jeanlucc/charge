@@ -1,3 +1,5 @@
 session:
     max_age: 3600
     cookie_name: _session
+security:
+    cost: 12

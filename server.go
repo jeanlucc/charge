@@ -21,9 +21,10 @@ func main() {
 	// Config
 	config.LoadEnv()
 	config.Configure()
-	router.Routes(e)
 	config.Templates(e)
 	config.Session(e)
+	// Routing
+	router.Routes(e)
 	// Database
 	database.Connect()
 	// Server

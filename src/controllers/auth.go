@@ -5,52 +5,59 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
-	"github.com/theodo/scalab/config"
-	"github.com/theodo/scalab/src/entities"
 	"github.com/theodo/scalab/src/repositories"
+
+	"github.com/labstack/echo/v4"
 	"github.com/theodo/scalab/src/security"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func SignIn(c echo.Context) error {
-	cred := new(security.Credentials)
-	if err := c.Bind(cred); err != nil {
+	cred := security.Credentials{}
+	if err := c.Bind(&cred); err != nil {
 		return c.String(http.StatusBadRequest, "Could not retrieve username password from body")
 	}
-	user := repositories.FindUserByEmail(cred.Username)
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(cred.Password)); err != nil {
-		log.Println("login attempt with password mismatch on user: ", user.Id)
-		return c.String(http.StatusUnauthorized, "")
+	up := security.NewUserFromCredentialProvider()
+	user, err := up.Get(cred, c)
+	if err != nil {
+		if _, ok := err.(*security.PasswordMismatchError); ok {
+			log.Println("login attempt with password mismatch on user: ", user.Id)
+			return c.String(http.StatusUnauthorized, "")
+		} else if _, ok := err.(*repositories.GetMappedResultError); ok {
+			return c.String(http.StatusUnauthorized, "could not signin with provided credentials")
+		} else {
+			log.Panic("unknown: ", err)
+		}
 	}
-
-	sess, _ := session.Get(config.Cfg.Session.CookieName, c)
-	sess.Values["email"] = user.Email
-	sess.Save(c.Request(), c.Response())
 
 	return c.String(http.StatusOK, "logged in user id: "+user.Id)
 }
 
 func Me(c echo.Context) error {
-	sess, _ := session.Get(config.Cfg.Session.CookieName, c)
-	return c.String(http.StatusOK, fmt.Sprintf("hello, here is your email: %v", sess.Values["email"]))
+	up := security.NewUserFromContextProvider()
+	user, err := up.Get(c)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, "")
+	}
+
+	return c.String(http.StatusOK, fmt.Sprintf("hello, here is your email: %v", user.Email))
 }
 
 func SignUp(c echo.Context) error {
-	cred := new(security.Credentials)
-	if err := c.Bind(cred); err != nil {
+	cred := security.ConfirmedCredentials{}
+	if err := c.Bind(&cred); err != nil {
 		return c.String(http.StatusBadRequest, "Could not retrieve username password from body")
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(cred.Password), config.Cfg.Security.Cost)
+	uc := security.NewUserAccountCreator()
+	user, err := uc.Create(cred)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Could not create account")
+		if _, ok := err.(*security.ConfirmedPasswordMismatchError); ok {
+			return c.String(http.StatusBadRequest, "passwords mismatch")
+		} else {
+			return c.String(http.StatusInternalServerError, "Could not create account")
+		}
 	}
-	user := entities.User{Name: cred.Username, Email: cred.Username, Password: string(password)}
-
-	user = repositories.CreateUser(user)
 
 	return c.String(http.StatusOK, "Account created"+user.Id)
 }

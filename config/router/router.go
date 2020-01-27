@@ -11,4 +11,16 @@ func ConfRoutes(e *echo.Echo) {
 	e.POST("/signin", controllers.SignIn)
 	e.POST("/signup", controllers.SignUp)
 	e.GET("/me", controllers.Me)
+	apiRoutes(e)
+}
+
+func apiRoutes(e *echo.Echo) {
+	apiG := e.Group("/api")
+	projectRoutes(apiG)
+}
+
+func projectRoutes(pg *echo.Group) {
+	g := pg.Group("/projects")
+	c := controllers.NewProjectController()
+	g.GET("/", c.Get)
 }

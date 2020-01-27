@@ -1,0 +1,11 @@
+{{template "base" .}}
+
+{{define "body"}}
+<h1>Projects</h1>
+
+<ul>
+{{ range .Projects }}
+    <li>name: {{ .Name }}</li>
+{{end}}
+</ul>
+{{end}}

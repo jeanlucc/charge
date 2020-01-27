@@ -1,3 +1,4 @@
 build
 postgres-data
 vendor
+!db/migrations/*.sql

@@ -21,10 +21,10 @@ func main() {
 	// Config
 	config.LoadEnv()
 	config.Configure()
-	config.Templates(e)
-	config.Session(e)
+	config.ConfTemplates(e)
+	config.ConfSession(e)
 	// Routing
-	router.Routes(e)
+	router.ConfRoutes(e)
 	// Database
 	database.Connect()
 	// Server

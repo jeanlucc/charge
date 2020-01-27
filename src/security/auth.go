@@ -50,7 +50,7 @@ func (up userFromCredentialProvider) Get(cred Credentials, c echo.Context) (user
 		return user, &PasswordMismatchError{}
 	}
 
-	sess, _ := session.Get(config.Cfg.Session.CookieName, c)
+	sess, _ := session.Get(config.GetSession().CookieName, c)
 	sess.Values["email"] = user.Email
 	sess.Save(c.Request(), c.Response())
 
@@ -58,7 +58,7 @@ func (up userFromCredentialProvider) Get(cred Credentials, c echo.Context) (user
 }
 
 func (up userFromContextProvider) Get(c echo.Context) (user entities.User, err error) {
-	sess, _ := session.Get(config.Cfg.Session.CookieName, c)
+	sess, _ := session.Get(config.GetSession().CookieName, c)
 	r := repositories.NewUserRepository()
 	email, ok := sess.Values["email"].(string)
 	if !ok {
@@ -75,7 +75,7 @@ func (uc userAccountCreator) Create(cred ConfirmedCredentials) (user entities.Us
 	}
 
 	var password []byte
-	password, err = bcrypt.GenerateFromPassword([]byte(cred.Password), config.Cfg.Security.Cost)
+	password, err = bcrypt.GenerateFromPassword([]byte(cred.Password), config.GetSecurity().Cost)
 	if err != nil {
 		return
 	}

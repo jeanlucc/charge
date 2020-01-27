@@ -6,7 +6,7 @@ import (
 )
 
 // Defines the routes of the application, it is called at server creation
-func Routes(e *echo.Echo) {
+func ConfRoutes(e *echo.Echo) {
 	e.GET("/", controllers.Home)
 	e.POST("/signin", controllers.SignIn)
 	e.POST("/signup", controllers.SignUp)

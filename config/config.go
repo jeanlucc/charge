@@ -7,21 +7,39 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	Session struct {
-		Secret     string
-		MaxAge     int    `mapstructure:"max_age"`
-		CookieName string `mapstructure:"cookie_name"`
-	} `mapstructure:"session"`
-	Database struct {
-		Url string
-	}
-	Security struct {
-		Cost int `mapstructure:"cost"`
-	} `mapstructure:"security"`
+type Session struct {
+	Secret     string
+	MaxAge     int    `mapstructure:"max_age"`
+	CookieName string `mapstructure:"cookie_name"`
 }
 
-var Cfg Config
+type Database struct {
+	Url string
+}
+
+type Security struct {
+	Cost int `mapstructure:"cost"`
+}
+
+type config struct {
+	Session  Session `mapstructure:"session"`
+	Database Database
+	Security Security `mapstructure:"security"`
+}
+
+var cfg config
+
+func GetSession() Session {
+	return cfg.Session
+}
+
+func GetDatabase() Database {
+	return cfg.Database
+}
+
+func GetSecurity() Security {
+	return cfg.Security
+}
 
 func Configure() {
 	env := os.Getenv("APP_ENV")
@@ -31,13 +49,13 @@ func Configure() {
 
 	for _, name := range []string{"config", "config_" + env} {
 		readConfigFile(name)
-		if err := viper.Unmarshal(&Cfg); err != nil {
+		if err := viper.Unmarshal(&cfg); err != nil {
 			log.Fatalf("unable to decode into struct, %v", err)
 		}
 	}
 
 	bindEnv()
-	if err := viper.Unmarshal(&Cfg); err != nil {
+	if err := viper.Unmarshal(&cfg); err != nil {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
 

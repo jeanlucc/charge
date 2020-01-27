@@ -11,7 +11,7 @@ import (
 var Db *sql.DB
 
 func Connect() {
-	dbCfg := config.Cfg.Database
+	dbCfg := config.GetDatabase()
 	connector, err := pq.NewConnector(dbCfg.Url)
 	if err != nil {
 		log.Panic("Could not connect to database", err)

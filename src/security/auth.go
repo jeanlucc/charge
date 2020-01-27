@@ -9,37 +9,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserFromCredentialProvider interface {
-	Get(cred Credentials, c echo.Context) (entities.User, error)
-}
-
 type userFromCredentialProvider struct{}
-
-func NewUserFromCredentialProvider() UserFromCredentialProvider {
+func NewUserFromCredentialProvider() userFromCredentialProvider {
 	return userFromCredentialProvider{}
 }
 
-type UserFromContextProvider interface {
-	Get(c echo.Context) (entities.User, error)
-}
-
 type userFromContextProvider struct{}
-
-func NewUserFromContextProvider() UserFromContextProvider {
+func NewUserFromContextProvider() userFromContextProvider {
 	return userFromContextProvider{}
 }
 
-type UserAccountCreator interface {
-	Create(cred ConfirmedCredentials) (entities.User, error)
-}
-
 type userAccountCreator struct{}
-
-func NewUserAccountCreator() UserAccountCreator {
+func NewUserAccountCreator() userAccountCreator {
 	return userAccountCreator{}
 }
 
-func (up userFromCredentialProvider) Get(cred Credentials, c echo.Context) (user entities.User, err error) {
+func (up *userFromCredentialProvider) Get(cred Credentials, c echo.Context) (user entities.User, err error) {
 	r := repositories.NewUserRepository()
 	user, err = r.FindByEmail(cred.Username)
 	if err != nil {
@@ -57,7 +42,7 @@ func (up userFromCredentialProvider) Get(cred Credentials, c echo.Context) (user
 	return
 }
 
-func (up userFromContextProvider) Get(c echo.Context) (user entities.User, err error) {
+func (up *userFromContextProvider) Get(c echo.Context) (user entities.User, err error) {
 	sess, _ := session.Get(config.GetSession().CookieName, c)
 	r := repositories.NewUserRepository()
 	email, ok := sess.Values["email"].(string)
@@ -68,7 +53,7 @@ func (up userFromContextProvider) Get(c echo.Context) (user entities.User, err e
 	return
 }
 
-func (uc userAccountCreator) Create(cred ConfirmedCredentials) (user entities.User, err error) {
+func (uc *userAccountCreator) Create(cred ConfirmedCredentials) (user entities.User, err error) {
 	if cred.Password != cred.ConfirmedPassword {
 		err = &ConfirmedPasswordMismatchError{}
 		return

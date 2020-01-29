@@ -15,7 +15,7 @@ func (r *projectRepository) FindAll() ([]entities.Project, error) {
 }
 
 func (r *projectRepository) FindByOwner(u entities.User) ([]entities.Project, error) {
-	return r.getMappedProjectList("SELECT * FROM projects WHERE id = $1", u)
+	return r.getMappedProjectList("SELECT id, name FROM projects AS p JOIN projects_users_relation AS pu ON p.id = pu.project_id AND pu.user_id = $1", u.Id)
 }
 
 func (r *projectRepository) Find(id int) (entities.Project, error) {

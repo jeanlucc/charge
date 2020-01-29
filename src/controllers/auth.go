@@ -17,8 +17,8 @@ func SignIn(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Could not retrieve username password from body")
 	}
 
-	up := security.NewUserFromCredentialProvider()
-	user, err := up.Get(cred, c)
+	up := security.NewUserSigninProvider()
+	user, err := up.SignIn(cred, c)
 	if err != nil {
 		if _, ok := err.(*security.PasswordMismatchError); ok {
 			log.Println("login attempt with password mismatch on user: ", user.Id)
@@ -26,7 +26,7 @@ func SignIn(c echo.Context) error {
 		} else if _, ok := err.(*repositories.GetMappedResultError); ok {
 			return c.String(http.StatusUnauthorized, "could not signin with provided credentials")
 		} else {
-			log.Panic("unknown: ", err)
+			return c.JSON(http.StatusInternalServerError, "")
 		}
 	}
 

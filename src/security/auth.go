@@ -1,6 +1,8 @@
 package security
 
 import (
+	"strconv"
+
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/theodo/scalab/config"
@@ -9,22 +11,25 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type userFromCredentialProvider struct{}
-func NewUserFromCredentialProvider() userFromCredentialProvider {
-	return userFromCredentialProvider{}
+type userSigninProvider struct{}
+
+func NewUserSigninProvider() userSigninProvider {
+	return userSigninProvider{}
 }
 
 type userFromContextProvider struct{}
+
 func NewUserFromContextProvider() userFromContextProvider {
 	return userFromContextProvider{}
 }
 
 type userAccountCreator struct{}
+
 func NewUserAccountCreator() userAccountCreator {
 	return userAccountCreator{}
 }
 
-func (up *userFromCredentialProvider) Get(cred Credentials, c echo.Context) (user entities.User, err error) {
+func (up *userSigninProvider) SignIn(cred Credentials, c echo.Context) (user entities.User, err error) {
 	r := repositories.NewUserRepository()
 	user, err = r.FindByEmail(cred.Username)
 	if err != nil {
@@ -36,20 +41,34 @@ func (up *userFromCredentialProvider) Get(cred Credentials, c echo.Context) (use
 	}
 
 	sess, _ := session.Get(config.GetSession().CookieName, c)
-	sess.Values["email"] = user.Email
+	sess.Values["user_id"] = user.Id
 	sess.Save(c.Request(), c.Response())
 
 	return
 }
 
-func (up *userFromContextProvider) Get(c echo.Context) (user entities.User, err error) {
+func (up *userFromContextProvider) GetId(c echo.Context) (id int, err error) {
 	sess, _ := session.Get(config.GetSession().CookieName, c)
-	r := repositories.NewUserRepository()
-	email, ok := sess.Values["email"].(string)
+	stringId, ok := sess.Values["user_id"].(string)
 	if !ok {
+		err = &InvalidAuthSessionError{}
 		return
 	}
-	user, err = r.FindByEmail(email)
+	id, err = strconv.Atoi(stringId)
+	if err != nil {
+		err = &InvalidAuthSessionError{err}
+		return
+	}
+	return
+}
+
+func (up *userFromContextProvider) Get(c echo.Context) (user entities.User, err error) {
+	id, err := up.GetId(c)
+	if err != nil {
+		return
+	}
+	r := repositories.NewUserRepository()
+	user, err = r.Find(id)
 	return
 }
 

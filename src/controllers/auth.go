@@ -14,7 +14,7 @@ import (
 func SignIn(c echo.Context) error {
 	cred := security.Credentials{}
 	if err := c.Bind(&cred); err != nil {
-		return c.String(http.StatusBadRequest, "Could not retrieve username password from body")
+		return c.JSON(http.StatusBadRequest, message{"Could not retrieve username password from body"})
 	}
 
 	up := security.NewUserSigninProvider()
@@ -22,42 +22,42 @@ func SignIn(c echo.Context) error {
 	if err != nil {
 		if _, ok := err.(*security.PasswordMismatchError); ok {
 			log.Println("login attempt with password mismatch on user: ", user.Id)
-			return c.String(http.StatusUnauthorized, "")
+			return c.JSON(http.StatusUnauthorized, message{""})
 		} else if _, ok := err.(*repositories.GetMappedResultError); ok {
-			return c.String(http.StatusUnauthorized, "could not signin with provided credentials")
+			return c.JSON(http.StatusUnauthorized, message{"could not signin with provided credentials"})
 		} else {
-			return c.JSON(http.StatusInternalServerError, "")
+			return c.JSON(http.StatusInternalServerError, message{""})
 		}
 	}
 
-	return c.String(http.StatusOK, "logged in user id: "+user.Id)
+	return c.JSON(http.StatusOK, "")
 }
 
 func Me(c echo.Context) error {
 	up := security.NewUserFromContextProvider()
 	user, err := up.Get(c)
 	if err != nil {
-		return c.String(http.StatusUnauthorized, "")
+		return c.JSON(http.StatusUnauthorized, message{""})
 	}
 
-	return c.String(http.StatusOK, fmt.Sprintf("hello, here is your email: %v", user.Email))
+	return c.JSON(http.StatusOK, message{fmt.Sprintf("hello, here is your email: %v", user.Email)})
 }
 
 func SignUp(c echo.Context) error {
 	cred := security.ConfirmedCredentials{}
 	if err := c.Bind(&cred); err != nil {
-		return c.String(http.StatusBadRequest, "Could not retrieve username password from body")
+		return c.JSON(http.StatusBadRequest, message{"Could not retrieve username password from body"})
 	}
 
 	uc := security.NewUserAccountCreator()
 	user, err := uc.Create(cred)
 	if err != nil {
 		if _, ok := err.(*security.ConfirmedPasswordMismatchError); ok {
-			return c.String(http.StatusBadRequest, "passwords mismatch")
+			return c.JSON(http.StatusBadRequest, message{"passwords mismatch"})
 		} else {
-			return c.String(http.StatusInternalServerError, "Could not create account")
+			return c.JSON(http.StatusInternalServerError, message{"Could not create account"})
 		}
 	}
 
-	return c.String(http.StatusOK, "Account created"+user.Id)
+	return c.JSON(http.StatusOK, user.Id)
 }

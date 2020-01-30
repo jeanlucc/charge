@@ -37,6 +37,7 @@ func (r *projectRepository) projectToMapRetriever() (interface{}, []interface{})
 }
 
 func (r *projectRepository) resultsToEntities(results []interface{}) (projects []entities.Project, err error) {
+	projects = []entities.Project{} // important so that response is "[]" and not "null" for 0 projects
 	for _, result := range results {
 		if project, ok := (result).(*entities.Project); ok {
 			projects = append(projects, *project)

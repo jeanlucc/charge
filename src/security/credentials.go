@@ -1,12 +1,12 @@
 package security
 
 type Credentials struct {
-	Username string `form:"username"`
-	Password string `form:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type ConfirmedCredentials struct {
-	Username          string `form:"username"`
-	Password          string `form:"password"`
-	ConfirmedPassword string `form:"password"`
+	Username          string `json:"username"`
+	Password          string `json:"password"`
+	ConfirmedPassword string `json:"confirmedPassword"`
 }

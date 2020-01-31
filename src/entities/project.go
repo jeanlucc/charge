@@ -1,6 +1,6 @@
 package entities
 
 type Project struct {
-	Id   string `json:"Id"`
+	Id   int    `json:"Id"`
 	Name string `json:"name"`
 }

@@ -7,15 +7,27 @@ import (
 	"github.com/theodo/scalab/src/security"
 )
 
-func SessionAuth() echo.MiddlewareFunc {
+func ConfigureRoleHierarchy(h map[string][]string) {
+
+}
+
+func IsGranted(role string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			up := security.NewUserFromContextProvider()
-			_, err := up.GetId(c)
+			roles, err := up.GetRoles(c)
 			if err != nil {
 				return echo.NewHTTPError(http.StatusUnauthorized)
 			}
-			return next(c)
+			if "" == role {
+				return next(c)
+			}
+			for _, ur := range roles {
+				if ur == role {
+					return next(c)
+				}
+			}
+			return echo.NewHTTPError(http.StatusUnauthorized)
 		}
 	}
 }

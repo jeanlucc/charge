@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -36,11 +35,13 @@ func SignIn(c echo.Context) error {
 func Me(c echo.Context) error {
 	up := security.NewUserFromContextProvider()
 	user, err := up.Get(c)
+	ur := repositories.NewUserRepository()
+	user, err = ur.FindWithRoles(user.Id)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, message{""})
 	}
 
-	return c.JSON(http.StatusOK, message{fmt.Sprintf("hello, here is your email: %v", user.Email)})
+	return c.JSON(http.StatusOK, user)
 }
 
 func SignUp(c echo.Context) error {

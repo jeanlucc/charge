@@ -13,6 +13,8 @@ require (
 	github.com/cockroachdb/cockroach-go v0.0.0-20190925194419-606b3d062051 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20191128021309-1d7a30a10f73 // indirect
 	github.com/edsrzf/mmap-go v1.0.0 // indirect
+	github.com/go-pg/pg v8.0.6+incompatible // indirect
+	github.com/go-pg/pg/v9 v9.1.2
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/gocql/gocql v0.0.0-20200121121104-95d072f1b5bb // indirect
 	github.com/golang-migrate/migrate/v4 v4.8.0 // indirect
@@ -25,7 +27,7 @@ require (
 	github.com/labstack/echo-contrib v0.8.0
 	github.com/labstack/echo/v4 v4.1.6
 	github.com/labstack/gommon v0.3.0 // indirect
-	github.com/lib/pq v1.3.0
+	github.com/lib/pq v1.3.0 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.11 // indirect
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible // indirect

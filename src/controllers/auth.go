@@ -35,8 +35,6 @@ func SignIn(c echo.Context) error {
 func Me(c echo.Context) error {
 	up := security.NewUserFromContextProvider()
 	user, err := up.Get(c)
-	ur := repositories.NewUserRepository()
-	user, err = ur.FindWithRoles(user.Id)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, message{""})
 	}

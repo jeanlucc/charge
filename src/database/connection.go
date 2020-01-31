@@ -1,22 +1,27 @@
 package database
 
 import (
-	"database/sql"
 	"log"
 
-	"github.com/lib/pq"
+	"github.com/go-pg/pg/v9"
 	"github.com/theodo/scalab/config"
 )
 
-var Db *sql.DB
+var db *pg.DB
+
+func Db() pg.DB {
+	return *db
+}
+
+func Close() {
+	db.Close()
+}
 
 func Connect() {
 	dbCfg := config.GetDatabase()
-	connector, err := pq.NewConnector(dbCfg.Url)
+	options, err := pg.ParseURL(dbCfg.Url)
 	if err != nil {
-		log.Panic("Could not connect to database", err)
+		log.Panic("Could not parse database connection url", err)
 	}
-
-	Db = sql.OpenDB(connector)
-	//defer db.Close()
+	db = pg.Connect(options)
 }

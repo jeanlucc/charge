@@ -10,9 +10,9 @@ import (
 )
 
 func ConfSession(e *echo.Echo) {
-	databaseCfg := GetDatabase()
+	dbCfg := GetDatabase()
 	sessionCfg := GetSession()
-	store, err := pgstore.NewPGStore(databaseCfg.Url, []byte(sessionCfg.Secret))
+	store, err := pgstore.NewPGStore(dbCfg.Url, []byte(sessionCfg.Secret))
 	if err != nil {
 		log.Panic("Could not configure session store")
 	}

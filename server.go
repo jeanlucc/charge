@@ -29,4 +29,6 @@ func main() {
 	database.Connect()
 	// Server
 	e.Logger.Fatal(e.Start(":3000"))
+	// Shutdown
+	database.Close()
 }

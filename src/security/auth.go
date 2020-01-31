@@ -38,17 +38,17 @@ func (uc *userAccountCreator) Create(cred ConfirmedCredentials) (user entities.U
 	if err != nil {
 		return
 	}
-	user = entities.User{Name: cred.Username, Email: cred.Username, Password: string(password)}
+	user = entities.User{Username: cred.Username, Email: cred.Username, Password: string(password)}
 
 	r := repositories.NewUserRepository()
-	user, err = r.Create(user)
+	err = r.Create(&user)
 
 	return
 }
 
 func (up *userSigninProvider) SignIn(cred Credentials, c echo.Context) (user entities.User, err error) {
 	r := repositories.NewUserRepository()
-	user, err = r.FindByEmail(cred.Username)
+	user, err = r.FindForLogin(cred.Username)
 	if err != nil {
 		return
 	}
@@ -58,8 +58,12 @@ func (up *userSigninProvider) SignIn(cred Credentials, c echo.Context) (user ent
 	}
 
 	sess, _ := session.Get(config.GetSession().CookieName, c)
+	roles := make([]string, 0, len(user.Roles))
+	for _, role := range user.Roles {
+		roles = append(roles, role.Role)
+	}
 	sess.Values["user_id"] = user.Id
-	sess.Values["user_roles"] = user.Roles
+	sess.Values["user_roles"] = roles
 	sess.Save(c.Request(), c.Response())
 
 	return

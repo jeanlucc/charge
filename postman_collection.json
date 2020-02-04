@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "2009d381-9d34-4e83-840c-9d189426df49",
+		"name": "Scalab",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"jeanlucc+scalab6@theodo.fr\",\n\t\"password\": \"ploptoto42$\",\n\t\"confirmedPassword\": \"ploptoto42$\"\n}\n"
+				},
+				"url": {
+					"raw": "http://scalab.local:3000/signup",
+					"protocol": "http",
+					"host": [
+						"scalab",
+						"local"
+					],
+					"port": "3000",
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"jeanlucc+scalabp2@theodo.fr\",\n\t\"password\": \"ploptoto42$\"\n}\n"
+				},
+				"url": {
+					"raw": "http://scalab.local:3000/signin",
+					"protocol": "http",
+					"host": [
+						"scalab",
+						"local"
+					],
+					"port": "3000",
+					"path": [
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "me",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://scalab.local:3000/me",
+					"protocol": "http",
+					"host": [
+						"scalab",
+						"local"
+					],
+					"port": "3000",
+					"path": [
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "admin projects get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://scalab.local:3000/api/projects/",
+					"protocol": "http",
+					"host": [
+						"scalab",
+						"local"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"projects",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "projects get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://scalab.local:3000/api/projects/mine",
+					"protocol": "http",
+					"host": [
+						"scalab",
+						"local"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"projects",
+						"mine"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
